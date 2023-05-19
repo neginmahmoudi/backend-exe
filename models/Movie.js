@@ -1,4 +1,4 @@
-const db = require("../config/dbConnect.js");
+const db = require("../utils/dbConnect.js");
 
 class MovieModel {
   static async getMovies() {

@@ -14,9 +14,8 @@ const refreshToken = async (req, res) => {
       return res.status(401).json({ message: 'Invalid refresh token.' });
     }
 
-    // create a new access token
 const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-// send back the new access token
+
 res.json({ accessToken });
 } catch (err) {
 res.status(500).json({ message: err.message });

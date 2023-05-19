@@ -44,8 +44,8 @@ class UserModel {
       });
     });
   }
-  
-static async deleteUser(id) {
+
+  static async deleteUser(id) {
     return new Promise((resolve, reject) => {
       const query = "DELETE FROM users WHERE id = ?";
       db.query(query, [id], (error, result) => {
@@ -81,9 +81,7 @@ static async deleteUser(id) {
     const userId = await addUser(name, hashedPassword);
     return { id: userId, name };
   }
-
 }
-
 
 async function checkUserExists(name) {
   const query = "SELECT id FROM users WHERE name = ?";

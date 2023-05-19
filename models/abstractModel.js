@@ -1,0 +1,1 @@
+//cpy/paste/naming more generic/property of database table/

@@ -3,7 +3,8 @@ const db = require("../utils/dbConnect");
 class RefreshTokenModel {
   static async getRefreshTokenByUserId(userId) {
     return new Promise((resolve, reject) => {
-      const query = "SELECT refresh_token FROM refresh_tokens WHERE user_id = ?";
+      const query =
+        "SELECT refresh_token FROM refresh_tokens WHERE user_id = ?";
       db.query(query, [userId], (error, result) => {
         if (error) {
           reject(error);
@@ -18,7 +19,8 @@ class RefreshTokenModel {
 
   static async saveRefreshToken(userId, refreshToken) {
     return new Promise((resolve, reject) => {
-      const query = "INSERT INTO refresh_tokens (user_id, refresh_token) VALUES (?, ?)";
+      const query =
+        "INSERT INTO refresh_tokens (user_id, refresh_token) VALUES (?, ?)";
       db.query(query, [userId, refreshToken], (error, result) => {
         if (error) {
           reject(error);
@@ -42,9 +44,9 @@ class RefreshTokenModel {
     });
   }
 
-static async updateRefreshToken(userId, refreshToken) {
+  static async updateRefreshToken(userId, refreshToken) {
     return new Promise((resolve, reject) => {
-        // what is the column name 
+      // what is the column name
       const query = "UPDATE users SET refresh_token = ? WHERE id = ?";
       db.query(query, [refreshToken, userId], (error, result) => {
         if (error) {
@@ -57,7 +59,6 @@ static async updateRefreshToken(userId, refreshToken) {
       });
     });
   }
-
 }
 
 module.exports = RefreshTokenModel;

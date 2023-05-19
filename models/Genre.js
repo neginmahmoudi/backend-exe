@@ -1,4 +1,4 @@
-const db = require("../config/dbConnect.js");
+const db = require("../utils/dbConnect.js");
 
 class GenreModel {
   static async getGenres() {

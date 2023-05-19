@@ -3,12 +3,14 @@ const userController = require("../../controllers/UserController.js");
 const router = express.Router();
 const { check } = require("express-validator");
 const reviewController = require("../../controllers/ReviewController.js");
+const verifyJWT = require("../../middleware/verifyJWT");
 
-router.get("/users", userController.getAllUsers);
-router.get("/users/:id", userController.getUserById);
-router.post("/users", userController.addNewUser);
+router.get("/users", verifyJWT, userController.getAllUsers);
+router.get("/users/:id", verifyJWT, userController.getUserById);
+router.post("/users", verifyJWT, userController.addNewUser);
 router.delete(
   "/users",
+  verifyJWT,
   [
     check("id")
       .exists()
@@ -18,6 +20,6 @@ router.delete(
   ],
   userController.deleteUserById
 );
-router.put("/users", userController.updateUser);
-router.get("/users/:id/reviews", reviewController.getUserReviews);
+router.put("/users", verifyJWT, userController.updateUser);
+router.get("/users/:id/reviews", verifyJWT, reviewController.getUserReviews);
 module.exports = router;

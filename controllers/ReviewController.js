@@ -1,6 +1,6 @@
 const reviewModel = require("../models/Review.js");
 const { validationResult } = require("express-validator");
-//add status 
+
 class ReviewController {
   static async getAllReviews(req, res) {
     const results = await reviewModel.getReviews();
