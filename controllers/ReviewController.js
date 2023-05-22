@@ -1,68 +1,93 @@
-const reviewModel = require("../models/Review.js");
+const ReviewModel = require("../models/Review");
 const { validationResult } = require("express-validator");
 
 class ReviewController {
-  static async getAllReviews(req, res) {
-    const results = await reviewModel.getReviews();
-    if (results) res.send(results);
+  async getAllReviews(req, res) {
+    try {
+      const results = await ReviewModel.find();
+      res.send(results);
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
   }
 
-  static async addNewReview(req, res) {
+  async addNewReview(req, res) {
     const { content, user_id, movie_id } = req.body;
     const review = { content, user_id, movie_id };
-    const newReview = await reviewModel.addNewReview(review);
-    if (newReview) {
-      res.send("added successfully");
-    } else res.send("some property missing");
+    try {
+      const newReview = await ReviewModel.create(review);
+      if (newReview) {
+        res.send("Review added successfully");
+      } else {
+        res.status(400).send("Failed to add review");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
   }
 
-  static async deleteReview(req, res) {
+  async deleteReview(req, res) {
     const reviewId = req.body.id;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.json(errors.array());
+      res.status(400).json(errors.array());
     } else {
-      if (reviewId) {
-        const deletedReview = await reviewModel.deleteReview(reviewId);
-        if (deletedReview) res.send("review deleted succesfully.");
-        else res.send("failed to delete the review.");
+      try {
+        const deletedReview = await ReviewModel.delete(reviewId);
+        if (deletedReview) {
+          res.send("Review deleted successfully.");
+        } else {
+          res.status(400).send("Failed to delete the review.");
+        }
+      } catch (error) {
+        res.status(500).send("Internal server error");
       }
     }
   }
 
-  static async updateReview() {
-    const { id } = req.body;
-    const { content, user_id, movie_id } = req.body;
-    const updatedReview = await reviewModel.editReview(
-      id,
-      content,
-      user_id,
-      movie_id
-    );
-    if (updatedReview) {
-      res.send("user updated successfully");
-    } else {
-      res.send("failed to update user");
+  async updateReview(req, res) {
+    const { id, content, user_id, movie_id } = req.body;
+    try {
+      const updatedReview = await ReviewModel.update(id, {
+        content,
+        user_id,
+        movie_id,
+      });
+      if (updatedReview) {
+        res.send("Review updated successfully");
+      } else {
+        res.status(400).send("Failed to update review");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
     }
   }
 
-  static async getUserReviews(req, res) {
+  async getUserReviews(req, res) {
     const userId = req.params.id;
-    const reviews = await reviewModel.getFoundReviewByUserId(userId);
-    if (reviews) {
-      res.send(reviews);
-    } else {
-      res.status(404).send("Reviews not found");
+    try {
+      const reviews = await ReviewModel.getFoundReviewByUserId(userId);
+      if (reviews) {
+        res.send(reviews);
+      } else {
+        res.status(404).send("Reviews not found");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
     }
   }
 
-  static async getMovieReviews(req, res) {
+  async getMovieReviews(req, res) {
     const movieId = req.params.id;
-    const reviews = await reviewModel.getFoundReviewByMovieId(movieId);
-    if (reviews) {
-      res.send(reviews);
-    } else {
-      res.status(404).send("Reviews not found");
+    try {
+      const reviews = await ReviewModel.getFoundReviewByMovieId(movieId);
+      if (reviews) {
+        res.send(reviews);
+      } else {
+        res.status(404).send("Reviews not found");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
     }
   }
 }

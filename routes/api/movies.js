@@ -1,12 +1,12 @@
 const express = require("express");
-const moviesController = require("../../controllers/MovieController.js");
+const movieController = require("../../controllers/MovieController.js");
 const router = express.Router();
 const { check } = require("express-validator");
 const reviewController = require("../../controllers/ReviewController.js");
 
-router.get("/movies", moviesController.getAllMovies);
-router.get("/movies/:id", moviesController.getMovieById);
-router.post("/movies", moviesController.addNewMovie);
+router.get("/movies", movieController.getAllMovies.bind(movieController));
+router.get("/movies/:id", movieController.getMovieById.bind(movieController));
+router.post("/movies", movieController.addNewMovie.bind(movieController));
 router.delete(
   "/movies",
   [
@@ -16,8 +16,9 @@ router.delete(
       .isNumeric()
       .withMessage("invalid data type"),
   ],
-  moviesController.deleteMovie
+  movieController.deleteMovie.bind(movieController)
 );
-router.put("/movies", moviesController.updateMovie);
-router.get("/movies/:id/reviews", reviewController.getMovieReviews);
+router.put("/movies", movieController.updateMovie.bind(movieController));
+router.get("/movies/:id/reviews", reviewController.getMovieReviews.bind(reviewController));
+
 module.exports = router;

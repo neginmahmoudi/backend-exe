@@ -1,56 +1,80 @@
-const movieModel = require("../models/Movie.js");
+const MovieModel = require("../models/MovieModel");
 const { validationResult } = require("express-validator");
 
 class MovieController {
-  static async getAllMovies(req, res) {
-    let results = await movieModel.getMovies();
-    if (results) res.send(results);
-  }
- 
-  static async getMovieById(req, res) {
-    const movieId = req.params.id;
-    const movie = await movieModel.getMovieById(movieId);
-    if (movie) {
-      res.send(movie);
-    } else {
-      res.status(404).send("Movie not found");
+  async getAllMovies(req, res) {
+    try {
+      const results = await MovieModel.find();
+      res.status(200).send(results);
+    } catch (error) {
+      res.status(500).send("Internal server error");
     }
   }
 
-  static async addNewMovie(req, res) {
-    const { title, description, genre_id } = req.body;
-    const movie = { title, description, genre_id };
-    const newMovie = await movieModel.addNewMovie(movie);
-    if (newMovie) {
-      res.send("add successfully");
-    } else res.send("some property missing");
+  async getMovieById(req, res) {
+    const movieId = req.params.id;
+    try {
+      const movie = await MovieModel.findById(movieId);
+      if (movie) {
+        res.status(200).send(movie);
+      } else {
+        res.status(404).send("Movie not found");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
   }
 
-  static async deleteMovie(req, res) {
+  async addNewMovie(req, res) {
+    const { title, description, genre_id } = req.body;
+    const movie = { title, description, genre_id };
+    try {
+      const newMovie = await MovieModel.create(movie);
+      if (newMovie) {
+        res.status(201).send("Movie added successfully");
+      } else {
+        res.status(400).send("Failed to add movie");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
+  }
+
+  async deleteMovie(req, res) {
     const movieId = req.body.id;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.json(errors.array());
+      res.status(400).json(errors.array());
     } else {
-      if (movieId) {
-        const deletedMovie = await movieModel.deleteMovie(movieId);
-        if (deletedMovie) res.send("movie deleted succesfully.");
-        else res.send("failed to delete the movie.");
+      try {
+        const deletedMovie = await MovieModel.delete(movieId);
+        if (deletedMovie) {
+          res.status(200).send("Movie deleted successfully");
+        } else {
+          res.status(400).send("Failed to delete the movie");
+        }
+      } catch (error) {
+        res.status(500).send("Internal server error");
       }
     }
   }
 
-  static async updateMovie(req,res) {
-    const { id } = req.body;
-    const { title, description} = req.body;
-    const updatedMovie = await movieModel.editMovie(id, title, description);
-    if (updatedMovie) {
-      res.send("user updated successfully");
-    } else {
-      res.send("failed to update user");
+  async updateMovie(req, res) {
+    const { id, title, description } = req.body;
+    try {
+      const updatedMovie = await MovieModel.update(id, {
+        title,
+        description,
+      });
+      if (updatedMovie) {
+        res.status(200).send("Movie updated successfully");
+      } else {
+        res.status(400).send("Failed to update movie");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
     }
   }
-
 }
 
 module.exports = MovieController;

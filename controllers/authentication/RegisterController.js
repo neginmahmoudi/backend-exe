@@ -8,12 +8,13 @@ const register = async (req, res) => {
     return res.status(400).json({ message: "Name and password are required." });
   }
   try {
-    const userExists = await UserModel.checkUserExists(name);
+    const userModel = new UserModel();
+    const userExists = await userModel.checkUserExists(name);
     if (userExists) {
       return res.sendStatus(409);
     }
     const hashedPwd = await bcrypt.hash(password, 10);
-    const user = await UserModel.createUser(name, hashedPwd);
+    const user = await userModel.createUser(name, hashedPwd);
     if (!user) {
       return res.sendStatus(500);
     }
@@ -25,3 +26,4 @@ const register = async (req, res) => {
 };
 
 module.exports = { register };
+

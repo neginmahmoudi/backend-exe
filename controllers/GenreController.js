@@ -17,7 +17,7 @@ class GenreController {
     const genre = req.params.genre;
     try {
       const movies = await genreModel.getGenreMovies(genre);
-      res.send(movies);
+      res.status(200).send(movies);
     } catch (error) {
       res.status(500).send('An error occurred while fetching genre movies');
     }

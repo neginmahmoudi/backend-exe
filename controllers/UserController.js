@@ -13,7 +13,7 @@ class UserController {
     const userId = req.params.id;
     const user = await userModel.getUserById(userId);
     if (user) {
-      res.send(user);
+      res.status(200).send(user);
     } else {
       res.status(404).send("user not found");
     }
@@ -24,8 +24,8 @@ class UserController {
     const password = req.body.password;
     const newUser = await userModel.addUser(name, password);
     if (newUser) {
-      res.send("add successfully");
-    } else res.send("property missing");
+      res.status(200).send("add successfully");
+    } else res.status(400).send("property missing");
   }
 
   static async deleteUserById(req, res) {
@@ -36,8 +36,8 @@ class UserController {
     } else {
       if (userId) {
         const deletedUser = await userModel.deleteUser(userId);
-        if (deletedUser) res.send("user deleted succesfully.");
-        else res.send("failed to delete the user.");
+        if (deletedUser) res.status(200).send("user deleted succesfully.");
+        else res.status(400).send("failed to delete the user.");
       }
     }
   }
@@ -46,9 +46,9 @@ class UserController {
     const { id, name, password } = req.body;
     const updatedUser = await userModel.editUser(id, name, password);
     if (updatedUser) {
-      res.send("user updated successfully");
+      res.status(200).send("user updated successfully");
     } else {
-      res.send("failed to update user");
+      res.status(400).send("failed to update user");
     }
   }
 

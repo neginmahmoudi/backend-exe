@@ -1,13 +1,15 @@
 const express = require("express");
-const reviewController = require("../../controllers/ReviewController.js");
-const router = express.Router();
 const { check } = require("express-validator");
-const verifyJWT = require("../../middleware/verifyJWT");
 
-router.get("/reviews", reviewController.getAllReviews);
-router.post("/reviews", verifyJWT, reviewController.addNewReview);
+const reviewController = require("../../controllers/ReviewController");
+const verifyJWT = require("../middleware/verifyJWT");
+
+const router = express.Router();
+
+router.get("/", reviewController.getAllReviews.bind(reviewController));
+router.post("/", verifyJWT, reviewController.addNewReview.bind(reviewController));
 router.delete(
-  "/reviews",
+  "/",
   verifyJWT,
   [
     check("id")
@@ -16,7 +18,10 @@ router.delete(
       .isNumeric()
       .withMessage("invalid data type"),
   ],
-  reviewController.deleteReview
+  reviewController.deleteReview.bind(reviewController)
 );
-router.put("/reviews", verifyJWT, reviewController.updateReview);
+router.put("/", verifyJWT, reviewController.updateReview.bind(reviewController));
+router.get("/users/:id", reviewController.getUserReviews.bind(reviewController));
+router.get("/movies/:id", reviewController.getMovieReviews.bind(reviewController));
+
 module.exports = router;
